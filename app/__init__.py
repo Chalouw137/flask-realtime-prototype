@@ -14,3 +14,11 @@ def create_app():
     socketio.init_app(app)
 
     return app
+
+from flask import render_template
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+app = Flask(__name__, template_folder='templates')
+
