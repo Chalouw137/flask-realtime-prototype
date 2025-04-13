@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Real-Time Flask App</title>
+  <title>Real-Time Chat</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
-    <h1>Real-Time Messaging</h1>
-    <input id="msg" autocomplete="off"/><button onclick="sendMessage()">Send</button>
-    <ul id="messages"></ul>
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
-    <script src="/static/js/main.js"></script>
+  <h1>Real-time Chat</h1>
+  <input id="messageInput" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+  <ul id="messages"></ul>
+
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('message', (data) => {
+      const list = document.getElementById('messages');
+      const item = document.createElement('li');
+      item.textContent = data;
+      list.appendChild(item);
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value;
+      socket.emit('message', message);
+      input.value = '';
+    }
+  </script>
 </body>
 </html>
