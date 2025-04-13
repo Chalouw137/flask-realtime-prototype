@@ -1,24 +1,25 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_socketio import SocketIO
+import eventlet
+
+eventlet.monkey_patch()
 
 socketio = SocketIO(cors_allowed_origins="*")
 
 def create_app():
-    app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'secret!'
-    
-    from .routes import main
-    from .sockets import socket_events
+    app = Flask(__name__, template_folder='templates')
 
-    app.register_blueprint(main)
+    @app.route('/')
+    def index():
+        return render_template('index.html')
+
+    # Attach SocketIO to the app
     socketio.init_app(app)
 
+    # Define socket events directly here or import them
+    @socketio.on('message')
+    def handle_message(data):
+        print('Received message:', data)
+        socketio.send(data)
+
     return app
-
-from flask import render_template
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-app = Flask(__name__, template_folder='templates')
-
