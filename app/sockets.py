@@ -1,6 +1,11 @@
 from . import socketio
+#app/sockets.py
 
-@socketio.on("message")
-def handle_message(msg):
-    print("Received message: " + msg)
-    socketio.emit("response", "Echo: " + msg)
+def socket_events(socketio):
+      @socketio.on('connect')
+      def handle_connect():
+          print("Client connected")
+
+      @socketio.on('disconnect')
+      def handle_disconnect():
+          print("Client disconnected")
